@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
-export default protect = (req, res, next) => {
-  let token = req.headers.authorization?.split(" ");
+
+const protect = (req, res, next) => {
+  const token = req.cookies?.token;
 
   if (!token) {
     return res.status(401).json({ message: "Not authorized, no token" });
@@ -11,6 +12,8 @@ export default protect = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token failed" });
+    return res.status(401).json({ message: "Token failed" });
   }
 };
+
+export default protect;

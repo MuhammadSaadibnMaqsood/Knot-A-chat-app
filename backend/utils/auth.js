@@ -1,19 +1,20 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
-// 1. Bcrypt functions
-
-exports.hashPassword = async (password) => {
+// Hash
+export const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
-  return bcrypt.hashPassword(password, salt);
+  return bcrypt.hash(password, salt);
 };
 
-exports.comparePassword = async (password, hashPath) => {
-  return await bcrypt.compare(password, hashPath);
+// Compare
+export const comparePassword = async (password, hash) => {
+  return bcrypt.compare(password, hash);
 };
 
-// 2. JWT function
-
-exports.generateToken = async (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "30d" });
+// Token
+export const generateToken = (userId) => {
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
 };

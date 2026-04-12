@@ -1,4 +1,4 @@
-import Message from "../model/Message";
+import Message from "../model/Message.js";
 
 export const getMessages = async (req, res) => {
   const { conversationId } = req.params;

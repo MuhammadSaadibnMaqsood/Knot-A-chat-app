@@ -17,12 +17,12 @@ export default function ChatPage() {
 
   const socketRef = useRef(null);
 
-  // --- LOGIC (KEEPING AS IS) ---
   useEffect(() => {
     if (!user?._id) return;
 
     const socket = io(import.meta.env.VITE_BACKEND_URL, {
       query: { userId: user?._id },
+      withCredentials: true,
     });
 
     socketRef.current = socket;

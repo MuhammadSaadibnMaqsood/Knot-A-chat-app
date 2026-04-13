@@ -4,9 +4,10 @@ import Message from "../model/Message.js";
 const userSocketMap = new Map();
 
 export const initSocket = (server) => {
-  const io = new Server(server, {
+   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: process.env.FRONTEND_URL, 
+      credentials: true,            
     },
   });
 

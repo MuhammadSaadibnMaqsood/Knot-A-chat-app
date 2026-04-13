@@ -7,7 +7,6 @@ export const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All credentials are required" });
     }
@@ -36,11 +35,12 @@ export const signup = async (req, res) => {
     // ✅ Generate token
     const token = generateToken(newUser._id);
 
+    // auth.controller.js — wherever you do res.cookie(...)
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: true, // ✅ required for HTTPS (production)
+      sameSite: "none", // ✅ required for cross-origin cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({ user: newUser, message: "User created" });

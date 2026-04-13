@@ -7,5 +7,7 @@ export const getMessages = async (req, res) => {
     createdAt: 1,
   });
 
+  console.log("messages: ", messages);
+
   res.json(messages);
 };

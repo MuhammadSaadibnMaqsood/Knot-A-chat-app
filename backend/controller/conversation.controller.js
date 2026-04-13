@@ -2,7 +2,6 @@ import Conversation from "../model/Conversation.js";
 import Message from "../model/Message.js";
 import User from "../model/User.js";
 
-
 export const getOrCreateConversation = async (req, res) => {
   const { receiverId } = req.body;
   const senderId = req.user.id;
@@ -24,6 +23,7 @@ export const getUserConversations = async (req, res) => {
   try {
     const userId = req.user.id;
 
+
     // 1. Get all conversations where user is a participant
     const conversations = await Conversation.find({
       participants: userId,
@@ -34,7 +34,7 @@ export const getUserConversations = async (req, res) => {
       conversations.map(async (conv) => {
         // find the other participant
         const otherUserId = conv.participants.find(
-          (id) => id.toString() !== userId
+          (id) => id.toString() !== userId,
         );
 
         const otherUser = await User.findById(otherUserId).select("-password");
@@ -51,7 +51,7 @@ export const getUserConversations = async (req, res) => {
           lastMessage: lastMessage || null,
           updatedAt: conv.updatedAt,
         };
-      })
+      }),
     );
 
     res.json(enrichedConversations);

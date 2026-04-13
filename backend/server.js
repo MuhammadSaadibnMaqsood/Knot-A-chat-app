@@ -10,12 +10,19 @@ import http from "http";
 import userRoutes from "./routes/user.route.js";
 import conversationRoutes from "./routes/conversation.route.js";
 import messageRoutes from "./routes/message.route.js";
+import cors from "cors";
 
 const app = express();
 connectDB();
 
 const server = http.createServer(app);
 
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your React dev server port (Vite default)
+    credentials: true, // lowercase 'd', not 'Credential'
+  }),
+);
 // Initialize socket
 initSocket(server);
 
@@ -36,6 +43,6 @@ app.use("/api/con", conversationRoutes);
 app.use("/api/message", messageRoutes);
 
 const PORT = 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`APP IS LISTENT ON PORT ${PORT}`);
 });

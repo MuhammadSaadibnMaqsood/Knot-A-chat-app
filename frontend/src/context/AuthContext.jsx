@@ -1,16 +1,37 @@
-import { useState } from "react";
-import API from "../api/axios";
+import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-const useAuth = () => {
+import API from "../api/axios";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // 🔥 important for refresh
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // ✅ fetch user on app load
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await API.get("/auth/me");
+        setUser(data.user);
+      } catch {
+        setUser(null);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const login = async (email, password) => {
     setLoading(true);
     try {
       const { data } = await API.post("/auth/login", { email, password });
-
-      setUser(data?.user);
+      setUser(data.user);
       return true;
     } catch (e) {
       toast.error(e.response?.data?.message || "Login failed");
@@ -23,13 +44,12 @@ const useAuth = () => {
   const signup = async (username, email, password) => {
     setLoading(true);
     try {
-      console.log(username);
       const { data } = await API.post("/auth/signup", {
         username,
         email,
         password,
       });
-      setUser(data?.user);
+      setUser(data.user);
       return true;
     } catch (e) {
       toast.error(e.response?.data?.message || "Signup failed");
@@ -43,12 +63,18 @@ const useAuth = () => {
     try {
       await API.post("/auth/logout");
       setUser(null);
-    } catch (e) {
+    } catch {
       toast.error("Logout failed");
     }
   };
 
-  return { user, loading, login, signup, logout };
+  return (
+    <AuthContext.Provider
+      value={{ user, login, signup, logout, loading, checkingAuth }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export default useAuth;
+export const useAuth = () => useContext(AuthContext);

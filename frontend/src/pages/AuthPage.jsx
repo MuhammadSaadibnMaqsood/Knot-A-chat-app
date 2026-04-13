@@ -1,5 +1,5 @@
 import AuthScreen from "../components/auth/AuthScreen";
-import useAuth from "../hooks/auth";
+import { useAuth } from "../context/AuthContext";
 
 export default function AuthPage() {
   const { login, signup, loading } = useAuth();

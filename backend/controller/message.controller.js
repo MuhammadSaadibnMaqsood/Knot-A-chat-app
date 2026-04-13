@@ -3,11 +3,13 @@ import Message from "../model/Message.js";
 export const getMessages = async (req, res) => {
   const { conversationId } = req.params;
 
-  const messages = await Message.find({ conversationId }).sort({
-    createdAt: 1,
-  });
+  try {
+    const messages = await Message.find({ conversationId }).sort({
+      createdAt: 1,
+    });
 
-  console.log("messages: ", messages);
-
-  res.json(messages);
+    res.json(messages);
+  } catch (error) {
+    console.log(error);
+  }
 };

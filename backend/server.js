@@ -19,7 +19,7 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // your React dev server port (Vite default)
+    origin: process.env.FRONTEND_URL, // your React dev server port (Vite default)
     credentials: true, // lowercase 'd', not 'Credential'
   }),
 );
@@ -28,8 +28,8 @@ initSocket(server);
 
 // MIDDLEWARES
 app.use(cookieParser());
-app.use(securityHeaders);
 app.use(express.json());
+app.use(securityHeaders);
 // app.use(sanitizeData);
 app.use("/api", limiter);
 
@@ -42,7 +42,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/con", conversationRoutes);
 app.use("/api/message", messageRoutes);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`APP IS LISTENT ON PORT ${PORT}`);
 });
